@@ -21,7 +21,7 @@ CREATE INDEX idx_owner_currency ON accounts (owner, currency);
 
 CREATE TABLE orders (
 ID varchar(64) UNIQUE,
-timestamp datetime,
+timestamp INT,
 owner varchar(64),
 baseCurrency varchar(3),
 quoteCurrency varchar(3),
@@ -43,7 +43,7 @@ CREATE INDEX idx_curr_pair_side_timestamp ON orders (timestamp, baseCurrency, qu
 
 CREATE TABLE trades (
 ID varchar(64) UNIQUE,
-timestamp datetime,
+timestamp INT,
 orderID varchar(64),
 owner varchar(64),
 crossOrderID varchar(64),
@@ -71,7 +71,7 @@ CREATE INDEX idx_rate ON trades (rate);
 
 CREATE TABLE deposits (
 ID varchar(64) UNIQUE,
-timestamp datetime,
+timestamp INT,
 owner varchar(64),
 currency varchar(3),
 amount float,
@@ -86,7 +86,7 @@ CREATE INDEX idx_owner_currency_timestamp ON deposits (owner, currency, timestam
 
 CREATE TABLE withdraws (
 ID varchar(64) UNIQUE,
-timestamp datetime,
+timestamp INT,
 owner varchar(64),
 currency varchar(3),
 amount float),
@@ -101,10 +101,8 @@ CREATE INDEX idx_owner_currency_timestamp ON withdraws (owner, currency, timesta
 
 CREATE TABLE generalLedger (
 ID varchar(64) NOT NULL UNIQUE,
-timestamp datetime NOT NULL,
+timestamp INT NOT NULL,
 transactionID varchar(64) NOT NULL,
-accountType varchar(1) NOT NULL,
-entryType varchar(1) NOT NULL,
 account varchar(3) NOT NULL,
 currency varchar(3) NOT NULL,
 owner varchar(64),
@@ -116,14 +114,10 @@ FOREIGN KEY (owner) REFERENCES users(ID),
 FOREIGN KEY (orderID) REFERENCES orders(ID)
 );
 CREATE INDEX idx_currency ON generalLedger (currency); 
-CREATE INDEX idx_accountType ON generalLedger (currency, accountType); 
-CREATE INDEX idx_entryType ON generalLedger (currency, entryType); 
 CREATE INDEX idx_account ON generalLedger (currency, account); 
 CREATE INDEX idx_owner ON generalLedger (currency, owner); 
 CREATE INDEX idx_owner_account ON generalLedger (currency, owner, account); 
-CREATE INDEX idx_owner_account_entry ON generalLedger (currency, owner, account, entryType); 
 CREATE INDEX idx_order ON generalLedger (currency, orderID); 
-CREATE INDEX idx_account_entry ON generalLedger (currency, account, entryType);
 CREATE INDEX idx_transactionId ON generalLedger (currency, transactionID); 
-CREATE INDEX idx_total ON generalLedger (currency, account, entryType, accountType, owner, orderID);
+CREATE INDEX idx_total ON generalLedger (currency, account, owner, orderID);
     
